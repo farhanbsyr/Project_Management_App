@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import { useGetTasksQuery } from "@/state/api";
 import React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { dataGridClassName } from "@/lib/utils";
+import { dataGridClassName, dataGridSxStyles } from "@/lib/utils";
 
 type TableProps = {
   id: string;
@@ -73,9 +73,22 @@ const Table = ({ id, setIsModalNewTaskOpen }: TableProps) => {
     isLoading,
   } = useGetTasksQuery({ projectId: Number(id) });
 
-  if (isLoading) return <div>Loading....</div>;
-  if (error) return <div>An error occured while fetching taste</div>;
-
+  if (isLoading)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="Loading...." isSmallText />
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="An error occured while fetching taste" isSmallText />
+        </div>
+      </div>
+    );
   return (
     <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
       <div className="pt-5">
@@ -85,6 +98,7 @@ const Table = ({ id, setIsModalNewTaskOpen }: TableProps) => {
         rows={tasks || []}
         columns={columns}
         className={dataGridClassName}
+        sx={dataGridSxStyles(isDarkMode)}
       />
     </div>
   );

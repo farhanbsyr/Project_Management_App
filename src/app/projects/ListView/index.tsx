@@ -13,9 +13,22 @@ const ListView = ({ id, setIsModalNewTaskOpen }: ListProps) => {
     isLoading,
   } = useGetTasksQuery({ projectId: Number(id) });
 
-  if (isLoading) return <div>Loading....</div>;
-  if (error) return <div>An error occured while fetching tasks</div>;
-
+  if (isLoading)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="Loading...." isSmallText />
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="An error occured while fetching taste" isSmallText />
+        </div>
+      </div>
+    );
   return (
     <div className="px-4 pb-8 xl:pb-6">
       <div className="pt-5">

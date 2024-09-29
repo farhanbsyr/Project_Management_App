@@ -4,6 +4,7 @@ import { DisplayOption, Gantt, ViewMode } from "gantt-task-react";
 import { TaskType } from "gantt-task-react/dist/types/public-types";
 import "gantt-task-react/dist/index.css";
 import React, { useMemo, useState } from "react";
+import Header from "@/components/Header";
 
 type TimeLineProps = {
   id: string;
@@ -48,8 +49,22 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
     }));
   };
 
-  if (isLoading) return <div>Loading....</div>;
-  if (error) return <div>An error occured while fetching taste</div>;
+  if (isLoading)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="Loading...." isSmallText />
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="An error occured while fetching taste" isSmallText />
+        </div>
+      </div>
+    );
   return (
     <div className="px-4 xl:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2 py-5">

@@ -7,6 +7,7 @@ import { EllipsisVertical, MessageSquareMore, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { div, span } from "framer-motion/client";
 import Image from "next/image";
+import Header from "@/components/Header";
 type BoardProps = {
   id: string;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
@@ -27,9 +28,22 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
     updateTaskStatus({ taskId, status: toStatus });
   };
 
-  if (isLoading) return <div>Loading....</div>;
-  if (error) return <div>An Error </div>;
-
+  if (isLoading)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="Loading...." isSmallText />
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+        <div className="pt-5">
+          <Header name="An error occured while fetching taste" isSmallText />
+        </div>
+      </div>
+    );
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 xl:grid-cols-4">
