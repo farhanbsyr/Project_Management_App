@@ -1,25 +1,16 @@
+"use client";
 import { useAppSelector } from "@/app/redux";
-import { useGetTasksQuery } from "@/state/api";
+import { useGetProjectsQuery } from "@/state/api";
 import { DisplayOption, Gantt, ViewMode } from "gantt-task-react";
-import { TaskType } from "gantt-task-react/dist/types/public-types";
 import "gantt-task-react/dist/index.css";
 import React, { useMemo, useState } from "react";
 import Header from "@/components/Header";
 
-type TimeLineProps = {
-  id: string;
-  setIsModalNewTaskOpen: (isOpen: boolean) => void;
-};
-
 type TaskTypeItems = "task" | "milestone" | "project";
 
-const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
+const Timeline = () => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-  const {
-    data: tasks,
-    error,
-    isLoading,
-  } = useGetTasksQuery({ projectId: Number(id) });
+  const { data: projects, isLoading, isError } = useGetProjectsQuery();
 
   const [displayOptions, setDisplayOptions] = useState<DisplayOption>({
     viewMode: ViewMode.Month,
@@ -28,17 +19,17 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
 
   const ganttTasks = useMemo(() => {
     return (
-      tasks?.map((task) => ({
-        start: new Date(task.startDate as string),
-        end: new Date(task.dueDate as string),
-        name: task.title,
-        id: `Task-${task.id}`,
-        type: "task" as TaskType,
-        progress: task.points ? (task.points / 10) * 100 : 0,
+      projects?.map((project) => ({
+        start: new Date(project.startDate as string),
+        end: new Date(project.endDate as string),
+        name: project.name,
+        id: `Project-${project.id}`,
+        type: "project" as TaskTypeItems,
+        progress: 50,
         isDisabled: false,
       })) || []
     );
-  }, [tasks]);
+  }, [projects]);
 
   const handleViewModeChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -57,7 +48,7 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
         </div>
       </div>
     );
-  if (error)
+  if (isError || !projects)
     return (
       <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
         <div className="pt-5">
@@ -66,11 +57,9 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
       </div>
     );
   return (
-    <div className="px-4 xl:px-6">
-      <div className="flex flex-wrap items-center justify-between gap-2 py-5">
-        <h1 className="me-2 text-lg font-bold dark:text-white">
-          Project Task Timeline
-        </h1>
+    <div className="max-w-full p-8">
+      <header className="mb-4 flex items-center justify-between">
+        <Header name="Project Timeline" />
         <div className="relative inline-block w-64">
           <select
             name=""
@@ -84,7 +73,7 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
             <option value={ViewMode.Month}>Month</option>
           </select>
         </div>
-      </div>
+      </header>
       <div className="overflow-hidden rounded-md bg-white shadow dark:bg-dark-secondary dark:text-white">
         <div className="timeline">
           <Gantt
@@ -92,17 +81,10 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: TimeLineProps) => {
             {...displayOptions}
             columnWidth={displayOptions.viewMode === ViewMode.Month ? 150 : 100}
             listCellWidth="100px"
-            barBackgroundColor={isDarkMode ? "#101214" : "#aeb8c2"}
-            barBackgroundSelectedColor={isDarkMode ? "#000" : "#9ba1a6"}
+            projectBackgroundColor={isDarkMode ? "#101214" : "#1f2937"}
+            projectProgressColor={isDarkMode ? "#1f2937" : "#aeb8c2"}
+            projectProgressSelectedColor={isDarkMode ? "#000" : "#9ba1a6"}
           />
-        </div>
-        <div className="px-4 pb-5 pt-1">
-          <button
-            onClick={() => setIsModalNewTaskOpen(true)}
-            className="flex items-center rounded bg-blue-primary px-3 py-2 text-white hover:bg-blue-600"
-          >
-            Add New Task
-          </button>
         </div>
       </div>
     </div>
